@@ -9,6 +9,22 @@ var WebSocketServer = require('websocket').server,
     app = express(),
     nodemailer = require("nodemailer")
 
+require('dotenv').config();
+
+async function envio() {
+
+    const accountSid = process.env.ACCOUNT_SID;
+    const authToken = process.env.AUTH_TOKEN;
+
+    const client = require('twilio')(accountSid, authToken);
+
+    client.messages.create({
+        to: process.env.MY_PHONE_NUMBER,
+        from: '+14158959059',
+        body: 'Hola'
+    }).then(message => console.log(message.sid))
+
+}
 /* funcion de envio de correo */
 async function main() {
     // Generate test SMTP service account from ethereal.email
@@ -71,7 +87,7 @@ wsServer.on('request', function(request) {
             //COLOCAR AQUI ALERTA DE MENSAJES
             let alerta = JSON.parse(message.utf8Data);
             console.log('Alertaaaaaaaaaaaaaaaaaa')
-                /* console.log(alerta[numero]) */
+            envio()
             main().catch(console.error);
         }
     })
